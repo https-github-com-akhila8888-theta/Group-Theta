@@ -1,83 +1,105 @@
 import asyncio
 import sys
 class client_class:
+    """creating client class"""
     def __init__(self, server_ip, server_port, list, result):
         """Initilizing the variables"""
         self.server_ip = server_ip
         self.server_port = server_port
         self.client_command_list = list
         self.result = result
-    async def input_data(self,message,writer):
+    async def input_data(self, message, writer):
         message = message.encode()
         try:
             writer.write(message)
         except IOError:
             print('Input error')
-        message =message.decode()
+        message = message.decode()
         message = message.split()
         if message[0] == 'login':
             """we have to login here"""
             if len(message) == 3:
-                tuple = ('command :',message[0])
-                nw_tuple = ('input_user_name : ',message[1])
-                nw_tuple1 = ('input_password : ',message[2])
-                prs_tuple = (tuple,nw_tuple,nw_tuple1)
+                tuple = ('command :', message[0])
+                nw_tuple = ('input_user_name : ', message[1])
+                nw_tuple1 = ('input_password : ', message[2])
+                prs_tuple = (tuple, nw_tuple, nw_tuple1)
                 self.client_command_list.append(prs_tuple)
         elif message[0] == 'register':
             """register here"""
-            if len(message)==4:
-                tuple = ('command :',message[0])
-                nw_tuple = ('input_user_name : ',message[1])
-                nw_tuple1 = ('input_password : ',message[2])
-                nw_tuple2 =('input_previllages :', message[3])
-                prs_tuple = (tuple,nw_tuple,nw_tuple1,nw_tuple2)
+            if len(message) == 4:
+                tuple = ('command :', message[0])
+                nw_tuple = ('input_user_name : ', message[1])
+                nw_tuple1 = ('input_password : ', message[2])
+                nw_tuple2 = ('input_previllages :', message[3])
+                prs_tuple = (tuple, nw_tuple, nw_tuple1, nw_tuple2)
                 self.client_command_list.append(prs_tuple)
         elif message[0] == 'create_folder':
             """creating folder"""
-            if len(message)==2:
-                tuple = ('command :',message[0])
-                nw_tuple = ('input_folder_name : ',message[1])
-                prs_tuple = (tuple,nw_tuple)
+            if len(message) == 2:
+                tuple = ('command :', message[0])
+                nw_tuple = ('input_folder_name : ', message[1])
+                prs_tuple = (tuple, nw_tuple)
                 self.client_command_list.append(prs_tuple)
         elif message[0] == 'read_file':
             """reading file"""
-            if(len(message)!=2):
-                tuple = ('command :',message[0])
-                nw_tuple = ('input_read_name : ',message[1])
-                prs_tuple = (tuple,nw_tuple)
+            if(len(message) != 2):
+                tuple = ('command :', message[0])
+                nw_tuple = ('input_read_name : ', message[1])
+                prs_tuple = (tuple, nw_tuple)
                 self.client_command_list.append(prs_tuple)
         elif message[0] == 'write_file':
             """writing the file"""
-            if(len(message) ==3):
-                tuple = ('command :',message[0])
-                nw_tuple = ('input_write_file_name : ',message[1])
-                nw_tuple1 = ('written_data : ',message[2])
-                prs_tuple = (tuple,nw_tuple,nw_tuple1)
+            if(len(message) == 3):
+                tuple = ('command :', message[0])
+                nw_tuple = ('input_write_file_name : ', message[1])
+                nw_tuple1 = ('written_data : ', message[2])
+                prs_tuple = (tuple, nw_tuple, nw_tuple1)
                 self.client_command_list.append(prs_tuple)
         elif message[0] == 'change_folder':
             """Changing the directory"""
-            if (len(message)==2):
-                tuple = ('command :',message[0])
-                nw_tuple = ('folder_name : ',message[1])
-                prs_tuple = (tuple,nw_tuple)
+            if (len(message) == 2):
+                tuple = ('command :', message[0])
+                nw_tuple = ('folder_name : ', message[1])
+                prs_tuple = (tuple, nw_tuple)
                 self.client_command_list.append(prs_tuple)
         elif message[0] == 'list':
             """list is used to know whether which files are there in directory"""
-            if (len(message)!=1):
-                tuple = ('command :',message[0])
-                prs_tuple = (tuple,nw_tuple)
+            if (len(message) != 1):
+                tuple = ('command :', message[0])
+                prs_tuple = (tuple, nw_tuple)
                 self.client_command_list.append(prs_tuple)
         elif message[0] == 'delete':
             """deleting the files"""
             if(len(message) == 3):
-                tuple = ('command :',message[0])
-                nw_tuple = ('input_user_name : ',message[1])
-                nw_tuple1 = ('input_password : ',message[2])
-                prs_tuple = (tuple,nw_tuple,nw_tuple1)
+                tuple = ('command :', message[0])
+                nw_tuple = ('input_user_name : ', message[1])
+                nw_tuple1 = ('input_password : ', message[2])
+                prs_tuple = (tuple, nw_tuple, nw_tuple1)
                 self.client_command_list.append(prs_tuple)
         else:
             message = ' '.join(message)
             self.client_command_list.append(message)
+    def commands_issued(self):
+        """commands issued to the directory"""
+        for i in range(len(self.client_command_list)):
+            print(self.client_command_list)
+    def commands_clear(self):
+        """commands clear in the directory"""
+        self.client_command_list = []
+        message = 'commands cleared'
+        self.result.append(message)
+    def logout(self):
+        """Logout"""
+        message = 'logout successfully done'
+        self.result.append(message)
+    async def read_data(self, reader):
+        try:
+            data = await reader.read(1000)
+            if len(data) != 0:
+                data = data.decode()
+                print(data)
+        except IOError:
+            print('Reading Error')
     async def client_connection(self):
         reader, writer = await asyncio.open_connection(self.server_ip, self.server_port)
         while True:
@@ -129,7 +151,7 @@ class client_class:
                 if message != 'commands' and message != 'commands clear' and message != 'commands issued':
                     data = await self.read_data(reader)
             except:
-                continue      
+                continue                       
 def main():
     host = '127.0.0.1'
     port = 8888
