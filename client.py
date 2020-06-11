@@ -39,6 +39,45 @@ class client_class:
                 nw_tuple = ('input_folder_name : ',message[1])
                 prs_tuple = (tuple,nw_tuple)
                 self.client_command_list.append(prs_tuple)
+        elif message[0] == 'read_file':
+            """reading file"""
+            if(len(message)!=2):
+                tuple = ('command :',message[0])
+                nw_tuple = ('input_read_name : ',message[1])
+                prs_tuple = (tuple,nw_tuple)
+                self.client_command_list.append(prs_tuple)
+        elif message[0] == 'write_file':
+            """writing the file"""
+            if(len(message) ==3):
+                tuple = ('command :',message[0])
+                nw_tuple = ('input_write_file_name : ',message[1])
+                nw_tuple1 = ('written_data : ',message[2])
+                prs_tuple = (tuple,nw_tuple,nw_tuple1)
+                self.client_command_list.append(prs_tuple)
+        elif message[0] == 'change_folder':
+            """Changing the directory"""
+            if (len(message)==2):
+                tuple = ('command :',message[0])
+                nw_tuple = ('folder_name : ',message[1])
+                prs_tuple = (tuple,nw_tuple)
+                self.client_command_list.append(prs_tuple)
+        elif message[0] == 'list':
+            """list is used to know whether which files are there in directory"""
+            if (len(message)!=1):
+                tuple = ('command :',message[0])
+                prs_tuple = (tuple,nw_tuple)
+                self.client_command_list.append(prs_tuple)
+        elif message[0] == 'delete':
+            """deleting the files"""
+            if(len(message) == 3):
+                tuple = ('command :',message[0])
+                nw_tuple = ('input_user_name : ',message[1])
+                nw_tuple1 = ('input_password : ',message[2])
+                prs_tuple = (tuple,nw_tuple,nw_tuple1)
+                self.client_command_list.append(prs_tuple)
+        else:
+            message = ' '.join(message)
+            self.client_command_list.append(message)
     async def client_connection(self):
         reader, writer = await asyncio.open_connection(self.server_ip, self.server_port)
         while True:
