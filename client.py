@@ -7,6 +7,38 @@ class client_class:
         self.server_port = server_port
         self.client_command_list = list
         self.result = result
+    async def input_data(self,message,writer):
+        message = message.encode()
+        try:
+            writer.write(message)
+        except IOError:
+            print('Input error')
+        message =message.decode()
+        message = message.split()
+        if message[0] == 'login':
+            """we have to login here"""
+            if len(message) == 3:
+                tuple = ('command :',message[0])
+                nw_tuple = ('input_user_name : ',message[1])
+                nw_tuple1 = ('input_password : ',message[2])
+                prs_tuple = (tuple,nw_tuple,nw_tuple1)
+                self.client_command_list.append(prs_tuple)
+        elif message[0] == 'register':
+            """register here"""
+            if len(message)==4:
+                tuple = ('command :',message[0])
+                nw_tuple = ('input_user_name : ',message[1])
+                nw_tuple1 = ('input_password : ',message[2])
+                nw_tuple2 =('input_previllages :', message[3])
+                prs_tuple = (tuple,nw_tuple,nw_tuple1,nw_tuple2)
+                self.client_command_list.append(prs_tuple)
+        elif message[0] == 'create_folder':
+            """creating folder"""
+            if len(message)==2:
+                tuple = ('command :',message[0])
+                nw_tuple = ('input_folder_name : ',message[1])
+                prs_tuple = (tuple,nw_tuple)
+                self.client_command_list.append(prs_tuple)
     async def client_connection(self):
         reader, writer = await asyncio.open_connection(self.server_ip, self.server_port)
         while True:
