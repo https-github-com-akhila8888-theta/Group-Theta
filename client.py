@@ -45,6 +45,20 @@ class client_class:
                 print('TO DELETE THE USER FROM THE SERVER')
                 print('EXPECTED_INPUT :: delete user_name_to_delete admin_password')
                 print('EXAMPLE :: delete ramesh ramesh1234')
+            elif message == 'logout':
+                self.logout()
+                sys.exit()
+            elif message == 'commands issued':
+                self.commands_issued()
+            elif message == 'commands clear':
+                self.commands_clear()
+            elif len(message) != 0:
+                data = await self.input_data(message, writer)
+            try:
+                if message != 'commands' and message != 'commands clear' and message != 'commands issued':
+                    data = await self.read_data(reader)
+            except:
+                continue      
 def main():
     host = '127.0.0.1'
     port = 8888
