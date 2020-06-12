@@ -104,7 +104,38 @@ async def new_echo_handle(reader, writer):
                             pass
                     else:
                         await server.change_folder(message[1])
-           
+                elif message[0] == 'list':
+                    """List"""
+                    if len(message) != 1:
+                        try:
+                            new_msg = 'Error occured in the format of list of files\
+                                                   it should be just list'
+                            new_msg = new_msg.encode()
+                            writer.write(new_msg + '\n'.encode())
+                        except:
+                            pass
+                    else:
+                        await server.list_files()
+                elif message[0] == 'delete' :
+                    """Deleting the files"""
+                    if len(message) != 3:
+                        try:
+                            new_msg = 'Error occured in the format of delete It must be\
+                                          delete and user_name and admin_password'
+                            new_msg = new_msg.encode()
+                            writer.write(new_msg + '\n'.encode())
+                        except:
+                            pass
+                    else:
+                        addr = writer.get_extra_info('peername')
+                        await server.delete_user(message[1], message[2], addr)
+                else:
+                    try:
+                        new_msg = 'Invalid command is entered and try again'
+                        new_msg = new_msg.encode()
+                        writer.write(new_msg + '\n'.encode())
+                    except:
+                        print('Connection disconnected')
         except:
             addr = writer.get_extra_info('peername')
             logined_list[addr] = 0
