@@ -3,7 +3,7 @@ import sys
 import time
 class server_class:
     """Creating server class"""
-    def __init__(self, reader, writer, client_list, logined_list, temporary_clients, read_file_data, result):
+    def __init__(self,reader,writer,client_list,logined_list,temporary_clients,read_file_data,result):
         """Initializing the variables"""
         self.reader = reader
         self.writer = writer
@@ -12,18 +12,18 @@ class server_class:
         self.temporary_clients = temporary_clients
         self.read_file_data = read_file_data
         self.result = result
-    async def login_account(self, user_name, pass_word, addr):
+    async def login_account(self,user_name,pass_word,addr):
         """login account"""
         count = 0
         if self.logined_list[addr] == 0:
             for i in range(len(self.client_list)):
                 user_name_match = self.client_list[i][0]
                 pass_word_match = self.client_list[i][1]
-                if (user_name == user_name_match and pass_word == pass_word_match):
+                if( user_name == user_name_match and pass_word == pass_word_match):
                     message = 'login successful'
                     self.result.append(message)
                     message = message.encode()
-                    tuple = (user_name, pass_word)
+                    tuple = (user_name,pass_word)
                     self.logined_list[tuple] = 1
                     self.temporary_clients = addr
                     self.logined_list[addr] = 1
@@ -57,17 +57,17 @@ class server_class:
                 self.writer.write(message + '\n'.encode())
             except:
                 pass
-    async  def register_account(self, user_name, pass_word, privilages, addr):
+    async  def register_account(self,user_name,pass_word,privilages,addr):
         """register account"""
-        if len(user_name) == 0:
+        if len(user_name) == 0 :
             try:
-                message ='user_name should not be empty'
-                self.result.append(message)
-                message = message.encode()
+                message = 'user_name should not be empty'
+                self.result.append(message) 
+                message = message.encode()   
                 self.writer.write(message + '\n'.encode())
             except:
                 pass
-        elif len(pass_word) == 0:
+        elif(len(pass_word) == 0) :
             try:
                 message = 'user_name should not be empty'
                 self.result.append(message) 
@@ -75,13 +75,13 @@ class server_class:
                 self.writer.write(message + '\n'.encode())
             except:
                 pass
-        elif privilages == 'admin' or privilages == 'user':
+        elif(privilages == 'admin' or privilages == 'user'):
             count = 0
-            client = (user_name, pass_word, privilages)
+            client =  ( user_name , pass_word ,privilages)
             for i in range(len(self.client_list)):
                 user_name_match = self.client_list[i][0]
                 pass_word_match = self.client_list[i][1]
-                if (user_name == user_name_match and pass_word == pass_word_match):
+                if( user_name == user_name_match and pass_word == pass_word_match):
                     count = count + 1
             if count == 0:
                 val = 0
@@ -102,7 +102,7 @@ class server_class:
                     message = message.encode()    
                     try:
                         self.writer.write(message + '\n'.encode())
-                        self.logined_list[addr] = 1
+                        self.logined_list [addr]  = 1
                     except:
                         pass
                     self.client_list.append(client)
@@ -123,15 +123,58 @@ class server_class:
                     self.writer.write(message + '\n'.encode())
                 except:
                     pass
-        elif (privilages != 'admin' and privilages != 'user'):
+        elif (privilages != 'admin' and privilages != 'user' ):
             message = 'privilages must be either admin or user'
             self.result.append(message) 
             message = message.encode()    
             try:
                 self.writer.write(message + '\n'.encode())
             except:
+                pass        
+    async def change_folder(self,Folder_name):
+        """changing the folder"""
+        path = os.getcwd()
+        try:
+            os.chdir(Folder_name)
+            message = 'Folder changed successfully'
+            self.result.append(message)
+            message = message.encode()
+            try:
+                self.writer.write(message + '\n'.encode())
+            except Exception as e:
+                # print('client connection disconnected')
                 pass
-
+        except OSError:
+            try:
+                new_msg = 'No such Folder_name exits in the directory'
+                self.result.append(new_msg)
+                new_msg = new_msg.encode()
+                self.writer.write(new_msg + '\n'.encode())
+            except Exception as e:
+                # print('client connection disconnected')
+                pass
+    async def create_folder(self,Folder_name):
+        """creating the folder"""
+        try:
+            os.makedirs(Folder_name)
+            try:
+                new_msg = 'Folder created successfully'
+                self.result.append(new_msg)
+                new_msg = new_msg.encode()
+                self.writer.write(new_msg + '\n'.encode())
+            except Exception as e:
+                # print('client connection disconnected')
+                pass
+        except OSError:
+            try:
+                new_msg = 'Folder_name already created try another name'
+                self.result.append(new_msg)
+                new_msg = new_msg.encode()
+                self.writer.write(new_msg + '\n'.encode())
+            except Exception as e:
+                # print('client connection disconnected')
+                pass
+    
     async def list_files(self):
         """list files"""
         nw_list = []
@@ -142,7 +185,7 @@ class server_class:
             for i in range(len(list)):
                 size = os.path.getsize(list[i])
                 date = time.ctime(os.path.getctime(list[i]))
-                data = (list[i], size, date)
+                data = (list[i],size,date)
                 nw_list.append(data)
             for i in range(len(nw_list)):
                 for j in range(len(nw_list[i])):
@@ -163,3 +206,4 @@ class server_class:
         except OSError:
             self.result.append(False)
             print('os error')
+    
