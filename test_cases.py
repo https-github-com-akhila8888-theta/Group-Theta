@@ -1,7 +1,7 @@
 import asyncio
 import unittest
 from server_main import server_class
-from ass3_client import client_class
+from assign3_client import client_class
 class servertesting(unittest.TestCase):
 
     def setUp(self):
@@ -20,9 +20,21 @@ class servertesting(unittest.TestCase):
                             'privilages must be either admin or user'
                            ]
         self.assertListEqual(obj.result, expected_results)
-        
-        
-        
-        
+    def test_login(self):
+        """testing the login in directory"""
+        obj = server_class([], [], [], {}, {}, {}, [])
+        client = ('vinay', '$vinay123', 'admin')
+        obj.logined_list['121.0.0.2'] = 0
+        obj.client_list.append(client)
+        asyncio.run(obj.login_account('vinay', '$vinay', '121.0.0.2'))
+        asyncio.run(obj.login_account('vinay', '$vinay123', '121.0.0.2'))
+        asyncio.run(obj.login_account('vinay', '$vinay123', '121.0.0.2'))
+        expected_results = ['login failed',
+                            'login successful',
+                            'logined already'
+                           ]
+        self.assertListEqual(obj.result, expected_results)
+
+
 if __name__ == '__main__':
     unittest.main()
