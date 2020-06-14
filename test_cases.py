@@ -1,3 +1,4 @@
+"""importing modules"""
 import asyncio
 import unittest
 from server_main import server_class
@@ -69,7 +70,31 @@ class servertesting(unittest.TestCase):
                             'content succesfully written in the file'
                            ]
         self.assertListEqual(obj.result, expected_results)
-        
-        
+    def test_read_file(self):
+        """testing the reading files in directory"""
+        obj = server_class([], [], [], {}, {}, {}, [])
+        asyncio.run(obj.write_file('sample.txt', 'saidattu'))
+        asyncio.run(obj.read_file('sample.txt'))
+        asyncio.run(obj.read_file('new_sample.txt'))
+        expected_results = ['New_file is created and content succesfully written in the file',
+                            'File reading is done',
+                            'File does not exits in the directory'
+                           ]
+        self.assertListEqual(obj.result, expected_results)
+    class client_testing(unittest.TestCase):
+        def test_quit(self):
+            """here we can quit the commands from the server"""
+            obj = client_class('121.0.0.1', 8080, [], [])
+            obj.logout()
+            expected_result = ['logout successfully done']
+            self.assertListEqual(expected_result, obj.result)
+        def test_commands_clear(self):
+            """here we can clear the commands from the server"""
+            obj = client_class('121.0.0.1', 8080, [], [])
+            obj.commands_clear()
+            expected_result = ['commands cleared']
+            self.assertListEqual(expected_result, obj.result)
+
+
 if __name__ == '__main__':
     unittest.main()
