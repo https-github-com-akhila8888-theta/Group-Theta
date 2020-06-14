@@ -43,6 +43,17 @@ class servertesting(unittest.TestCase):
                             'Folder_name already created try another name'
                            ]
         self.assertListEqual(obj.result, expected_results)
+    def test_change_folder(self):
+        """testing the changing folder in directory"""
+        obj = server_class([], [], [], {}, {}, {}, [])
+        asyncio.run(obj.create_folder('sai'))
+        asyncio.run(obj.change_folder('sai'))
+        asyncio.run(obj.change_folder('ramesh'))
+        expected_results = ['Folder created successfully',
+                            'Folder changed successfully'
+                            'No such Folder_name exits in the directory'
+                            ]
+        self.assertListEqual(obj.result, expected_results)
         
  if __name__ == '__main__':
     unittest.main()
