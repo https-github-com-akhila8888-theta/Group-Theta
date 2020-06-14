@@ -34,7 +34,15 @@ class servertesting(unittest.TestCase):
                             'logined already'
                            ]
         self.assertListEqual(obj.result, expected_results)
-
-
-if __name__ == '__main__':
+    def test_create_folder(self):
+        """testing the creating folder in directory"""
+        obj = server_class([], [], [], {}, {}, {}, [])
+        asyncio.run(obj.create_folder('sai'))
+        asyncio.run(obj.create_folder('sai'))
+        expected_results = ['Folder created successfully',
+                            'Folder_name already created try another name'
+                           ]
+        self.assertListEqual(obj.result, expected_results)
+        
+ if __name__ == '__main__':
     unittest.main()
