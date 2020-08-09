@@ -93,15 +93,20 @@ class client_class:
         """commands issued to the directory"""
         for i in range(len(self.client_command_list)):
             print(self.client_command_list)
+        data = 'Commands are issued'
+        self.result.append(data)
     def commands_clear(self):
         """commands clear in the directory"""
         self.client_command_list = []
         message = 'commands cleared'
+        print("The commands are cleared Successfully")
         self.result.append(message)
     def logout(self):
         """Logout"""
         message = 'logout successfully done'
+        print(message)
         self.result.append(message)
+        sys.exit()
     async def read_data(self, reader):
         try:
             data = await reader.read(1000)
@@ -112,6 +117,7 @@ class client_class:
             print('Reading Error')
     async def client_connection(self):
         reader, writer = await asyncio.open_connection(self.server_ip, self.server_port)
+        count = 0
         while True:
             message = input()
             if message == 'commands':
@@ -148,19 +154,22 @@ class client_class:
                 print('TO DELETE THE USER FROM THE SERVER')
                 print('EXPECTED_INPUT :: delete user_name_to_delete admin_password')
                 print('EXAMPLE :: delete ramesh ramesh1234')
-            elif message == 'logout':
+            elif message == 'quit':
                 self.logout()
-                sys.exit()
+                break
             elif message == 'commands issued':
+                count = 1
                 self.commands_issued()
             elif message == 'commands clear':
+                count = 1
                 self.commands_clear()
             elif len(message) != 0:
                 data = await self.input_data(message, writer)
-            try:
-                data = await self.read_data(reader)
-            except:
-                continue                       
+            if count == 0: 
+                try:
+                    data = await self.read_data(reader)
+                except:
+                    continue                       
 def main():
     host = '127.0.0.1'
     port = 8888
